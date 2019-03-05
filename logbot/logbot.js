@@ -13,16 +13,16 @@ const PlayHost = GameAssets.playHost;
 const PlayPath = GameAssets.playPath;
 
 const OWNER = "STEAMROLLER";
-const MYNAME = '<script>alert("test")</script>'//"LOGBOT";
+const MYNAME = "LOGBOT";
 
 const URLS = [
-    'wss://game-us-s1.airma.sh/ctf1',
+    'wss://game-us-s1.airma.sh/ffa2',
     'ws://localhost:3501',
     'wss://game.airmash.steamroller.tk/dev',
     'wss://game-' + PlayHost + '.airma.sh/' + PlayPath
 ];
 
-const URL = URLS[2];
+const URL = URLS[0];
 
 var client = new WebSocket(URL, {
     rejectUnauthorized: false,
@@ -98,11 +98,12 @@ function processChatWhisper(packet) {
     }
 
     if (packet.text === ':specme') {
-        /*client.send(encodeMessage({
+        console.error("SPEC")
+        client.send(encodeMessage({
             c: CLIENTPACKET.COMMAND,
             com: "spectate",
             data: "" + packet.from
-        }));*/
+        }));
     }
 }
 
@@ -263,8 +264,6 @@ function decodePacketType(type) {
     return packetTypes[type];
 }
 function logPacket(packet) {
-    return;
-
     if (packet.c === SERVERPACKET.LOGIN) {
         selfID = packet.id;
     }
@@ -346,7 +345,10 @@ const onopen = function () {
     }, 8000);*/
 };
 const onclose = function () {
-    client = new WebSocket(URL);
+    client = new WebSocket(URL, {
+        rejectUnauthorized: false,
+        strictSSL: false
+    });
     client.binaryType = 'arraybuffer';
 
     client.on('close', onclose);
